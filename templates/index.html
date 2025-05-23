@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestión de Materia Prima</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f0ff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+
+        .form-container {
+            width: 40%;
+            background-color: #e6ccff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #b999ff;
+        }
+
+        .form-container h2 {
+            text-align: center;
+            color: #4b0082;
+        }
+
+        .form-container input,
+        .form-container button {
+            width: 100%;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        .form-container button {
+            background-color: #b266ff;
+            color: white;
+            font-weight: bold;
+            border: none;
+        }
+
+        .form-container button:hover {
+            background-color: #9933ff;
+        }
+
+        .table-container {
+            width: 60%;
+            background-color: #f5e6ff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px #d9b3ff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #d1b3ff;
+            color: #4b0082;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f0e6ff;
+        }
+
+        .operaciones a {
+            display: block;
+            margin: 5px 0;
+            text-decoration: none;
+            color: #4b0082;
+            font-weight: bold;
+        }
+
+        .mensaje {
+            color: green;
+            font-weight: bold;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <p class="mensaje">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="container">
+        <!-- Formulario -->
+        <div class="form-container">
+            <h2>{% if materia_editar %}Editar{% else %}Agregar{% endif %} Materia Prima</h2>
+            <form action="{% if materia_editar %}/update_materiaprima/{{ materia_editar[0] }}{% else %}/add_materiaprima{% endif %}" method="POST">
+                <input type="text" name="descripcion" placeholder="Descripción" value="{{ materia_editar[1] if materia_editar else '' }}" required>
+                <input type="text" name="codigo" placeholder="Código" maxlength="5" value="{{ materia_editar[2] if materia_editar else '' }}" required>
+                <input type="number" step="0.01" name="costo" placeholder="Costo" value="{{ materia_editar[3] if materia_editar else '' }}" required>
+                <input type="number" name="cantidad" placeholder="Cantidad" value="{{ materia_editar[4] if materia_editar else '' }}" required>
+                <input type="number" name="compra" placeholder="ID de Compra" value="{{ materia_editar[5] if materia_editar else '' }}" required>
+                <button type="submit">{% if materia_editar %}ACTUALIZAR{% else %}GUARDAR{% endif %}</button>
+            </form>
+        </div>
+
+        <!-- Tabla -->
+        <div class="table-container">
+            <h2>Listado de Materia Prima</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Código</th>
+                        <th>Costo</th>
+                        <th>Cantidad</th>
+                        <th>ID Compra</th>
+                        <th>Operaciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for materia in materiaprima %}
+                    <tr>
+                        <td>{{ materia[1] }}</td>
+                        <td>{{ materia[2] }}</td>
+                        <td>{{ materia[3] }}</td>
+                        <td>{{ materia[4] }}</td>
+                        <td>{{ materia[5] }}</td>
+                        <td class="operaciones">
+                            <a href="/edit/{{ materia[0] }}">Editar</a>
+                            <a href="/delete/{{ materia[0] }}">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</body>
+</html>
+
